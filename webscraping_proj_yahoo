@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Jul 28 21:16:33 2020
+
+@author: pim01001
+"""
+
+import requests
+from bs4 import BeautifulSoup
+
+page = requests.get("https://www.sec.gov/ix?doc=/Archives/edgar/data/1318605/000156459020019931/tsla-10q_20200331.htm")
+print(page.status_code)
+
+Tesla = BeautifulSoup(page.content, 'html.parser')
+
+zz=Tesla.find_all(id='dynamic-xbrl-form')
+#print(Tesla.prettify())
+
+
+
+
+
+
+page1 = requests.get("https://finance.yahoo.com/quote/TSLA/financials?p=TSLA")
+print(page1.status_code)
+
+
+yahoo = BeautifulSoup(page1.content, 'html.parser')
+ll=yahoo.find(class_="D(tbr) C($primaryColor)")
+
+# this will get us the Top Row
+len(list(ll.find_all('span')))
+list(ll.find_all('span'))[0].get_text()
+
+data= yahoo.find(class_="D(tbrg)")
+#print(data.prettify())
+tt=data.find_all(class_="D(tbc) Ta(start) Pend(15px)--mv2 Pend(10px) Bxz(bb) Py(8px) Bdends(s) Bdbs(s) Bdstarts(s) Bdstartw(1px) Bdbw(1px) Bdendw(1px) Bdc($seperatorColor) Pos(st) Start(0) Bgc($lv2BgColor) fi-row:h_Bgc($hoverBgColor) Pstart(15px)--mv2 Pstart(10px)")
+Parms=data.find_all('span', {'class':'Va(m)'})
+
+
+for i in range(len(Parms)):
+    Parms[i]= Parms[i].get_text()
+    print(Parms[i])
+
+first_col = data.find_all(class_="Ta(c) Py(6px) Bxz(bb) BdB Bdc($seperatorColor) Miw(120px) Miw(140px)--pnclg Bgc($lv1BgColor) fi-row:h_Bgc($hoverBgColor) D(tbc)")
+#first_col = data.find_all('data-test', {'fin-col'})
+
+for i in range(len(first_col)):
+    first_col[i] = first_col[i].get_text()
+    print(first_col[i])
+    
+    
+test = data.find_all(class_="D(tbr) fi-row Bgc($hoverBgColor):h")

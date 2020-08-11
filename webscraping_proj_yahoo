@@ -23,6 +23,9 @@ import matplotlib.pyplot as plt
 # reads in all the stocks and converts it to uppercase
 stocks=pd.read_csv('/home/pim01001/Documents/Bootcamp/python/proj/yahoo/stock_info.csv')
 stocks['Stocks']=stocks['Stocks'].str.upper()
+# output dataframe
+comb_df  = pd.DataFrame()
+
 
 for z in stocks['Stocks']:
     page1 = requests.get('https://finance.yahoo.com/quote/'+ z +'/financials?p='+z)
@@ -47,8 +50,8 @@ for z in stocks['Stocks']:
     # this gives header information for the table
     col_names.append('Ticker') 
     total= pd.DataFrame(columns=col_names)
-    comb_df = pd.DataFrame(columns=col_names)
-
+    #comb_df = pd.DataFrame(columns=col_names)
+    
     # this gets data for the finacial table and for loop organizes it
     test = data.find_all(class_="D(tbr) fi-row Bgc($hoverBgColor):h")
     for i in range(len(test)):
@@ -56,12 +59,27 @@ for z in stocks['Stocks']:
         print(temp)
         total.loc[i]=[str(temp[0])] + temp[1:6] +[str(z)]
     
-    comb_df.append(total.iloc[[0,4],])
+    def growth_percent(data_df):
+        x,y=data_df.shape
+        for b in range(1:3):
+            print(((data_df.iloc[:,b+1]-data_df.iloc[:,b])/data_df.iloc[:,b])*100)
         
-   
+        
+        print(data_df.shape)
+    growth_percent(total.iloc[[0,4],])
     
-    #total.iloc[[0,4],].to_csv(r'/home/pim01001/Documents/Bootcamp/python/proj/yahoo/comb.csv', 
-    #                          mode='a',index = False, header=True)
+    
+    comb_df=comb_df.append(total.iloc[[0,4],])
+    # this converts number in these rows to 
+    
+# gets rid of commas and turn into int    
+comb_df[col_names[2:6]]=comb_df[col_names[2:6]].apply(lambda x: x.str.replace(',','')).astype('int32')
+
+# need to compute average growth so take 2017-2016 / 2016  
+# then average for  4 years
+
+#comb_df.to_csv(r'/home/pim01001/Documents/Bootcamp/python/proj/yahoo/comb.csv', 
+#               index = False, header=True)
 
 #print(total.iloc[[0,4],])
     

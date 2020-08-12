@@ -78,13 +78,21 @@ def growth_percent(data_df):
 #comb_df=comb_df.append(growth_percent(comb_df[col_names[2:6]]))
 temp1=growth_percent(comb_df[col_names[2:6]])
 temp1=temp1.rename(columns={col_names[2]:col_names[2]+str(' % change'), col_names[3]:col_names[3]+str(' % change'),col_names[4]:col_names[4]+str(' % change')})
-temp1['Ticker']=comb_df['Ticker']
-# need to compute average growth so take 2017-2016 / 2016  
-# then average for  4 years
+temp1[['Breakdown','Ticker']]=comb_df[['Breakdown','Ticker']]
 
-comb_df=comb_df.round({col_names[2]:2,col_names[3]:2,col_names[4]:2,col_names[5]:2})
-comb_df=comb_df.merge(temp1, on='Ticker',how='right')
-comb_df.to_csv(r'/home/pim01001/Documents/Bootcamp/python/proj/yahoo/comb.csv', index = False, header=True)
+
+#merges to comb_df the growth columns
+comb_df=comb_df.merge(temp1, on=['Breakdown','Ticker'])
+col_names=comb_df.columns
+# rounding numbers to 2 decimal places
+
+for h in col_names[2:6]:
+    comb_df[h]=comb_df[h].apply(lambda x: '%1.2e' % x)
+
+#comb_df=comb_df.round({col_names[2]:2,col_names[3]:2,col_names[4]:2,col_names[5]:2})
+comb_df=comb_df.round({col_names[7]:2,col_names[8]:2,col_names[9]:2,col_names[5]:2})
+comb_df.iloc[:,0:10].to_csv(r'/home/pim01001/Documents/Bootcamp/python/proj/yahoo/comb.csv', index = False, header=True)
+
 
 #print(total.iloc[[0,4],])
     

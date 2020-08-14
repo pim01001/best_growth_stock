@@ -49,7 +49,9 @@ for z in stocks['Stocks']:
     
     # this gives header information for the table
     col_names.append('Ticker') 
-    total= pd.DataFrame(columns=col_names)
+    # col_names modified because of different financial year discrpency
+    col_names_mod=[col_names[0],col_names[1],'Y2019','Y2018','Y2017','Y2016',col_names[6]]
+    total= pd.DataFrame(columns=col_names_mod)
     #comb_df = pd.DataFrame(columns=col_names)
     
     # this gets data for the finacial table and for loop organizes it
@@ -65,7 +67,8 @@ for z in stocks['Stocks']:
     # this converts number in these rows to 
     
 # gets rid of commas and turn into int    
-comb_df[col_names[2:6]]=comb_df[col_names[2:6]].apply(lambda x: x.str.replace(',','')).astype('int32')
+comb_df[col_names_mod[2:6]]=comb_df[col_names_mod[2:6]].apply(lambda x: x.str.replace(',','')).astype('int32')
+#comb_df.to_csv(r'/home/pim01001/Documents/Bootcamp/python/proj/yahoo/comb_Debug.csv', index = False, header=True)
 
 def growth_percent(data_df):
     m,n=data_df.shape
@@ -76,8 +79,8 @@ def growth_percent(data_df):
     return temp  
         
 #comb_df=comb_df.append(growth_percent(comb_df[col_names[2:6]]))
-temp1=growth_percent(comb_df[col_names[2:6]])
-temp1=temp1.rename(columns={col_names[2]:col_names[2]+str(' % change'), col_names[3]:col_names[3]+str(' % change'),col_names[4]:col_names[4]+str(' % change')})
+temp1=growth_percent(comb_df[col_names_mod[2:6]])
+temp1=temp1.rename(columns={col_names_mod[2]:col_names_mod[2]+str(' % change'), col_names_mod[3]:col_names_mod[3]+str(' % change'),col_names_mod[4]:col_names_mod[4]+str(' % change')})
 temp1[['Breakdown','Ticker']]=comb_df[['Breakdown','Ticker']]
 
 
@@ -98,7 +101,7 @@ comb_df.iloc[:,0:10].to_csv(r'/home/pim01001/Documents/Bootcamp/python/proj/yaho
     
     # get page
 
-page1 = requests.get('https://finance.yahoo.com/quote/'+stocks[0]+'/financials?p='+stocks[0])
+#page1 = requests.get('https://finance.yahoo.com/quote/'+stocks[0]+'/financials?p='+stocks[0])
     
 
 
